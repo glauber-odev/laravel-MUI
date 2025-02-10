@@ -16,6 +16,9 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { Create, Face, Person } from '@mui/icons-material';
+
+// ultimo visto https://www.youtube.com/watch?v=uNWtrq9WdYE&list=TLPQMDkwMjIwMjWPqI6eg4r--w&index=3
 
 const drawerWidth = 240;
 
@@ -39,22 +42,47 @@ function ResponsiveDrawer({ children }, props) {
     }
   };
 
+  const items = [
+      {
+          title: 'Dashboard',
+          icon: <InboxIcon/>
+      },
+      {
+          title: 'Users',
+          icon: <Person/>
+      },
+      {
+          title: 'Create',
+          icon: <Create/>,
+          route: 'create'
+      },
+      {
+          title: 'Profile',
+          icon: <Face/>,
+          route: '/profile'
+      }
+
+  ];
+
   const drawer = (
     <div>
       <Toolbar />
       <Divider />
       <List>
-        {['Dashboard', 'Users', 'Create'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
+      {items.map((text, index) => {
+        return(
+        <ListItem key={index+1} disablePadding>
+            <ListItemButton href={text?.route}>
+                <ListItemIcon>
+                    {text.icon}
+                </ListItemIcon>
+                <ListItemText primary={text?.title}/>
             </ListItemButton>
-          </ListItem>
-        ))}
+        </ListItem>
+        )
+        })}
       </List>
+      <Divider/>
       {/* <Divider />
       <List>
         {['All mail', 'Trash', 'Spam'].map((text, index) => (
