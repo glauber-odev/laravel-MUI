@@ -54,7 +54,7 @@ function ResponsiveDrawer({ children }, props) {
       {
           title: 'Create',
           icon: <Create/>,
-          route: 'create'
+          route: '/create'
       },
       {
           title: 'Profile',
