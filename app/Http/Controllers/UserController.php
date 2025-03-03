@@ -11,6 +11,13 @@ use Inertia\Response;
 class UserController extends Controller
 {
 
+    public function index() : Response
+    {
+        $post = Student::all();
+
+        return Inertia::render('Users/Users', compact('post'));
+    }
+
     public function create(): Response
     {
         return Inertia::render('Users/Create');
