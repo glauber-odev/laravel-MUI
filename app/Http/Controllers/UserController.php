@@ -38,4 +38,8 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', 'Successfully posted!');
     }
+
+    public function editstudents(StudentRequest $request){
+        dd($request->toArray());
+    }
 }

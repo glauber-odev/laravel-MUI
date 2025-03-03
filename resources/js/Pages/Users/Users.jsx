@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Chip } from "@mui/material";
+import { Box, Chip, Typography } from "@mui/material";
+import EditDialog from './EditDialog';
 
 const columns = [
     {
-        field: "id",
+        field: "#",
         headerName: "ID",
         width: 30,
     },
@@ -46,7 +47,6 @@ const columns = [
         headerName: "National ID",
         width: 130,
         renderCell: params => {
-            console.log(params)
             if(params.value == 1 ){
                 return <Chip label='Voters ID' color="error"/>
             }
@@ -84,6 +84,14 @@ const columns = [
             );
         },
     },
+    {
+        field: "id",
+        headerName: "Actions",
+        width: 100,
+        renderCell: params=> {
+            return <EditDialog params={params} />
+        }
+    },
 ];
 
 const paginationModel = { page: 0, pageSize: 5 };
@@ -93,8 +101,8 @@ export default function DataTable({ post }) {
     const [rows, setRows] = useState([]);
 
     useEffect(() => {
-        const fetchData = post.map((data, index) => ({
-            id: data.id,
+        const fetchData = post.map((data, i) => ({
+            index: i+1,
             first_name: data.first_name,
             last_name: data.last_name,
             email: data.email,
@@ -103,15 +111,27 @@ export default function DataTable({ post }) {
             national_id: data.national_id,
             created_at: data.created_at,
             updated_at: data.updated_at,
+            id: data.id,
         }));
 
         setRows(fetchData);
     }, []);
 
+    function customToolbar () {
+        return (
+            <GridToolbarContainer>
+                <Box sx={{ p:2, display:'flex'}} >
+                    <Typography variant="h4" >Students</Typography>
+                </Box>
+            </GridToolbarContainer>
+        )
+    }
+
     return (
         <AuthenticatedLayout>
             <Paper sx={{ height: 400, width: "100%" }}>
                 <DataGrid
+                    slots = {{ toolbar: customToolbar }}
                     rows={rows}
                     columns={columns}
                     initialState={{ pagination: { paginationModel } }}

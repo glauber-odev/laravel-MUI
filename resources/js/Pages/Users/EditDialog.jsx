@@ -1,69 +1,80 @@
-import {
-    Box,
-    Grid,
-    Paper,
-    TextField,
-    Container,
-    Button,
-    Typography,
-    MenuItem,
-} from "@mui/material";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { ArrowBack, Save } from "@mui/icons-material";
+import * as React from 'react';
+import { useState } from 'react';
 import { useForm } from "@inertiajs/react";
-import { useState } from "react";
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { Grid } from '@mui/material';
+import { MenuItem } from '@headlessui/react';
+import { ArrowBack, Save } from '@mui/icons-material';
 
-const items = [
-    { text: "Voters ID", value: 1 },
-    { text: "National ID", value: 2 },
-    { text: "Drivers License", value: 3 },
-    { text: "National Healty Insurance", value: 4 },
-    // { text:'Voters ID', value:'VID' },
-    // { text:'National ID', value:'NID' },
-    // { text:'Drivers License', value:'DLS' },
-    // { text:'National Healty Insurance', value:'NHI' }
-];
+export default function FormDialog({ params }) {
 
-export default function Create() {
-
+    const [open, setOpen] = useState(false);
     const { data, setData, post, processing, errors } = useForm({
-        first_name: "",
-        last_name: "",
-        email: "",
-        phone_number: "",
-        dt_birthday: "",
-        national_id: "",
+        id: params.row.id,
+        first_name: params.row.first_name,
+        last_name: params.row.last_name,
+        email: params.row.email,
+        phone_number: params.row.phone_number,
+        dt_birthday: params.row.dt_birthday,
+        national_id: params.row.national_id,
     });
 
-    const [message, setMessage] = useState("");
+    const items = [
+        { text: "Voters ID", value: 1 },
+        { text: "National ID", value: 2 },
+        { text: "Drivers License", value: 3 },
+        { text: "National Healty Insurance", value: 4 },
+    ]
 
     function handleForm() {
-        post(route("poststudents"), {
+        post(route("editstudents"+data.id), {
             onSuccess: () => {
-                setMessage("Succesfully posted!");
+                setMessage("Succesfully edited!");
             },
         });
     }
 
-    return (
-        <AuthenticatedLayout>
-            <Container
-                sx={{
-                    width: "700px",
-                    maxWidth: "100%",
-                    padding: "40px",
-                    backgroundColor: "rgba(255,255,255)",
-                    borderRadius: 2,
-                }}
-                component={Paper}
-            >
-                <Typography align="center" mb={2} variant="h5">
-                    Create User
-                </Typography>
-                <Typography align="center" mb={2} variant="h5">
-                    {message}
-                </Typography>
-                <Grid container spacing={2}>
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+
+
+    <React.Fragment>
+      <Button variant="contained" color='primary' onClick={handleClickOpen}>
+       Edit
+      </Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        slotProps={{
+          paper: {
+            component: 'form',
+            onSubmit: (event) => {
+              event.preventDefault();
+              const formData = new FormData(event.currentTarget);
+              const formJson = Object.fromEntries(formData.entries());
+              const email = formJson.email;
+              console.log(email);
+              handleClose();
+            },
+          },
+        }}
+      >
+        <DialogTitle>{params.row.first_name +' '+params.row.last_name}</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
                     <Grid item xs={6}>
                         <TextField
                             name="first_name"
@@ -166,29 +177,13 @@ export default function Create() {
                             })}
                         </TextField>
                     </Grid>
-                    <Grid item xs={6}>
-                        <Button
-                            startIcon={<ArrowBack />}
-                            variant="contained"
-                            color="error"
-                            fullWidth
-                        >
-                            Back
-                        </Button>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Button
-                            startIcon={<Save />}
-                            variant="contained"
-                            color="success"
-                            fullWidth
-                            onClick={handleForm}
-                        >
-                            Submit
-                        </Button>
-                    </Grid>
                 </Grid>
-            </Container>
-        </AuthenticatedLayout>
-    );
+        </DialogContent>
+        <DialogActions>
+          <Button variant='contained' color='error' onClick={handleClose}>Cancel</Button>
+          <Button variant='contained' color='info' type="submit">Subscribe</Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
+  );
 }

@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/poststudents', [UserController::class, 'poststudents'])->name('poststudents');
     Route::get('/users', [UserController::class, 'index'])->name('users');
+    Route::put('/editstudents',[UserController::class, 'editstudents'])->name('editstudents');
 
 });
 
