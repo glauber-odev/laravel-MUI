@@ -11,25 +11,38 @@ import {
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { ArrowBack, Save } from "@mui/icons-material";
 import { useForm } from "@inertiajs/react";
+import { useState } from "react";
 
 const items = [
-    { text:'Voters ID', value:'VID' },
-    { text:'National ID', value:'NID' },
-    { text:'Drivers License', value:'DLS' },
-    { text:'National Healty Insurance', value:'NHI' }
+    { text: "Voters ID", value: 1 },
+    { text: "National ID", value: 2 },
+    { text: "Drivers License", value: 3 },
+    { text: "National Healty Insurance", value: 4 },
+    // { text:'Voters ID', value:'VID' },
+    // { text:'National ID', value:'NID' },
+    // { text:'Drivers License', value:'DLS' },
+    // { text:'National Healty Insurance', value:'NHI' }
 ];
 
-
 export default function Create() {
-
-    const { data, setData , processing, errors } = useForm({
-        first_name: '',
-        last_name: '',
-        email: '',
-        phone: '',
-        dob: '',
-        national_id: '',
+    const { data, setData, post, processing, errors } = useForm({
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone_number: "",
+        dt_birthday: "",
+        national_id: "",
     });
+
+    const [message, setMessage] = useState("");
+
+    function handleForm() {
+        post(route("poststudents"), {
+            onSuccess: () => {
+                setMessage("Succesfully posted!");
+            },
+        });
+    }
 
     return (
         <AuthenticatedLayout>
@@ -46,17 +59,24 @@ export default function Create() {
                 <Typography align="center" mb={2} variant="h5">
                     Create User
                 </Typography>
+                <Typography align="center" mb={2} variant="h5">
+                    {message}
+                </Typography>
                 <Grid container spacing={2}>
                     <Grid item xs={6}>
                         <TextField
                             name="first_name"
                             value={data.first_name}
-                            onChange={setData}
                             type="text"
                             id="First-Name"
                             label="First name"
                             variant="outlined"
                             fullWidth
+                            onChange={(e) =>
+                                setData("first_name", e.target.value)
+                            }
+                            error={!!errors.first_name}
+                            helperText={errors.first_name}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -68,55 +88,80 @@ export default function Create() {
                             label="Last name"
                             variant="outlined"
                             fullWidth
+                            onChange={(e) =>
+                                setData("last_name", e.target.value)
+                            }
+                            error={!!errors.last_name}
+                            helperText={errors.last_name}
                         />
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
-                            name="first_name"
+                            name="email"
                             value={data.email}
                             type="email"
                             id="Email"
                             label="Email"
                             variant="outlined"
                             fullWidth
+                            onChange={(e) => setData("email", e.target.value)}
+                            error={!!errors.email}
+                            helperText={errors.email}
                         />
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
-                            name="phone"
-                            value={data.phone}
-                            type="phone"
+                            name="phone_number"
+                            value={data.phone_number}
+                            type="text"
                             id="Phone-Number"
                             label="Phone Number"
                             variant="outlined"
                             fullWidth
+                            onChange={(e) =>
+                                setData("phone_number", e.target.value)
+                            }
+                            error={!!errors.phone_number}
+                            helperText={errors.phone_number}
                         />
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
-                            name="dob"
-                            value={data.dob}
+                            name="dt_birthday"
+                            value={data.dt_birthday}
                             type="date"
-                            id="dob"
+                            id="dt_birthday"
                             label="Date of Birthday"
                             variant="outlined"
                             fullWidth
+                            onChange={(e) =>
+                                setData("dt_birthday", e.target.value)
+                            }
+                            error={!!errors.dt_birthday}
+                            helperText={errors.dt_birthday}
                         />
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
                             name="national_id"
-                            value={data?.national_id ?? ''}
+                            value={data?.national_id ?? ""}
                             id="NationId"
                             label="National ID"
                             variant="outlined"
                             fullWidth
                             select
-                            onChange={(e)=>setData('national_id', e.target.value)}
+                            onChange={(e) =>
+                                setData("national_id", e.target.value)
+                            }
+                            error={!!errors.national_id}
+                            helperText={errors.national_id}
                         >
-                            {
-                            items?.map( (item, i) => {
-                                return <MenuItem key={i} value={item.value}>{item?.text}</MenuItem>
+                            {items?.map((item, i) => {
+                                return (
+                                    <MenuItem key={i} value={item.value}>
+                                        {item?.text}
+                                    </MenuItem>
+                                );
                             })}
                         </TextField>
                     </Grid>
@@ -136,6 +181,7 @@ export default function Create() {
                             variant="contained"
                             color="success"
                             fullWidth
+                            onClick={handleForm}
                         >
                             Submit
                         </Button>
