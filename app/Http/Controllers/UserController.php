@@ -39,7 +39,7 @@ class UserController extends Controller
 
         $student->save();
 
-        return redirect()->back()->with('success', 'Successfully posted!');
+        return redirect()->route('users')->with('success', 'Successfully posted!');
     }
 
     public function update(StudentRequest $request){
@@ -55,5 +55,14 @@ class UserController extends Controller
         $student->update();
 
         return redirect()->back()->with('success','Successfully updated!');
+    }
+
+    public function delete(Request $request) {
+
+        $student = Student::findOrFail($request->id);
+
+        $student->delete();
+
+        return redirect()->back()->with('success','Successfully deleted!');
     }
 }

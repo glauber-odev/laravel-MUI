@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/poststudents', [UserController::class, 'poststudents'])->name('poststudents');
     Route::get('/users', [UserController::class, 'index'])->name('users');
     Route::put('/student/update',[UserController::class, 'update'])->name('update');
+    Route::post('/student/delete', [UserController::class, 'delete'])->name('delete');
 
 });
 

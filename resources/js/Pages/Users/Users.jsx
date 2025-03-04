@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Box, Chip, Typography, Alert } from "@mui/material";
-import EditDialog from './EditDialog';
+import { Box, Chip, Typography, Alert, Snackbar } from "@mui/material";
+import EditDialog from "./EditDialog";
+import DeleteDialog from "./DeleteDialog";
 
 const columns = [
     {
@@ -45,21 +46,27 @@ const columns = [
     {
         field: "national_id",
         headerName: "National ID",
-        width: 130,
-        renderCell: params => {
-            if(params.value == 1 ){
-                return <Chip label='Voters ID' color="error"/>
+        width: 200,
+        renderCell: (params) => {
+            switch (params.value) {
+                case 1:
+                    return <Chip label="Voters ID" color="error" />;
+                    break;
+                case 2:
+                    return <Chip label="National ID" color="success" />;
+                    break;
+                case 3:
+                    return <Chip label="Drivers License" color="warning" />;
+                    break;
+                case 4:
+                    return (
+                        <Chip label="National Healty InsuranceI" color="info" />
+                    );
+                    break;
+                default:
+                    return <Chip label="No found" color="error" />;
             }
-            if(params.value == 2 ){
-                return <Chip label="National ID" color="success"/>
-            }
-            if(params.value == 3 ){
-                return <Chip label='Drivers License' color='warning'/>
-            }
-            if(params.value == 4 ){
-                return <Chip label='National Healty InsuranceI' color='info'/>
-            }
-        }
+        },
     },
     {
         field: "fullName",
@@ -74,7 +81,7 @@ const columns = [
         field: "created_at",
         headerName: "Created At",
         width: 130,
-        renderCell: params => {
+        renderCell: (params) => {
             return (
                 <Chip
                     color="primary"
@@ -87,22 +94,38 @@ const columns = [
     {
         field: "id",
         headerName: "Actions",
-        width: 100,
-        renderCell: params=> {
-            return <EditDialog params={params} />
-        }
+        width: 200,
+        renderCell: (params) => {
+            return (
+                <>
+                    <EditDialog params={params} />&nbsp;<DeleteDialog params={params} />
+                </>
+            );
+        },
     },
 ];
 
 const paginationModel = { page: 0, pageSize: 5 };
 
 export default function DataTable({ post, success }) {
-
     const [rows, setRows] = useState([]);
+    const [open, setOpen] = useState(false);
+
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+
+        setOpen(false);
+    };
 
     useEffect(() => {
         const fetchData = post.map((data, i) => ({
-            index: i+1,
+            index: i + 1,
             first_name: data.first_name,
             last_name: data.last_name,
             email: data.email,
@@ -117,26 +140,49 @@ export default function DataTable({ post, success }) {
         setRows(fetchData);
     }, [post]);
 
-    function customToolbar () {
+    useEffect(() => {
+        if (success) {
+            setOpen(true);
+        }
+    }, [success]);
+
+    function customToolbar() {
         return (
             <GridToolbarContainer>
-                <Box sx={{ p:2, display:'flex'}} >
-                    <Typography variant="h4" >Students</Typography>
+                <Box sx={{ p: 2, display: "flex" }}>
+                    <Typography variant="h4">Students</Typography>
                 </Box>
-                {success &&
-                    <Alert variant="filled" severity="success">
-                    {success}
-                    </Alert>
-                }
+                <Box sx={{ p: 2, display: "flex" }}>
+                    {success && (
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: "top",
+                                horizontal: "center",
+                            }}
+                            open={open}
+                            autoHideDuration={2000}
+                            onClose={handleClose}
+                        >
+                            <Alert
+                                onClose={handleClose}
+                                severity="success"
+                                variant="filled"
+                                sx={{ width: "100%" }}
+                            >
+                                {success}
+                            </Alert>
+                        </Snackbar>
+                    )}
+                </Box>
             </GridToolbarContainer>
-        )
+        );
     }
 
     return (
         <AuthenticatedLayout>
             <Paper sx={{ height: 400, width: "100%" }}>
                 <DataGrid
-                    slots = {{ toolbar: customToolbar }}
+                    slots={{ toolbar: customToolbar }}
                     rows={rows}
                     columns={columns}
                     initialState={{ pagination: { paginationModel } }}
