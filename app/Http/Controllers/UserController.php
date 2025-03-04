@@ -39,7 +39,19 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Successfully posted!');
     }
 
-    public function editstudents(StudentRequest $request){
-        dd($request->toArray());
+    public function update(StudentRequest $request){
+        // dd($request->toArray());
+
+        $student = Student::find($request->id);
+        $student->first_name = $request['first_name'];
+        $student->last_name = $request['last_name'];
+        $student->email = $request['email'];
+        $student->phone_number = $request['phone_number'];
+        $student->dt_birthday = $request['dt_birthday'];
+        $student->national_id = $request['national_id'];
+
+        $student->update();
+
+        return redirect()->back()->with('success','success');
     }
 }

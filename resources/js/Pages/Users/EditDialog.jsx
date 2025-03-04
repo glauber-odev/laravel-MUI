@@ -6,16 +6,15 @@ import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Grid } from '@mui/material';
+import { Box, Grid, patch } from '@mui/material';
 import { MenuItem } from '@headlessui/react';
-import { ArrowBack, Save } from '@mui/icons-material';
 
 export default function FormDialog({ params }) {
 
     const [open, setOpen] = useState(false);
-    const { data, setData, post, processing, errors } = useForm({
+    const [message, setMessage] = useState('');
+    const { data, setData, post, put, processing, errors } = useForm({
         id: params.row.id,
         first_name: params.row.first_name,
         last_name: params.row.last_name,
@@ -32,14 +31,6 @@ export default function FormDialog({ params }) {
         { text: "National Healty Insurance", value: 4 },
     ]
 
-    function handleForm() {
-        post(route("editstudents"+data.id), {
-            onSuccess: () => {
-                setMessage("Succesfully edited!");
-            },
-        });
-    }
-
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -47,6 +38,15 @@ export default function FormDialog({ params }) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleUpdate = () => {
+    put(route('update'), {
+        onSuccess: () => {
+            setMessage('success');
+            handleClose();
+        }
+    })
+  }
 
   return (
 
@@ -74,6 +74,7 @@ export default function FormDialog({ params }) {
       >
         <DialogTitle>{params.row.first_name +' '+params.row.last_name}</DialogTitle>
         <DialogContent>
+        <Box sx={{display:'flex', color:'green', mb:2.5 }}>{message}</Box>
           <Grid container spacing={2}>
                     <Grid item xs={6}>
                         <TextField
@@ -181,7 +182,7 @@ export default function FormDialog({ params }) {
         </DialogContent>
         <DialogActions>
           <Button variant='contained' color='error' onClick={handleClose}>Cancel</Button>
-          <Button variant='contained' color='info' type="submit">Subscribe</Button>
+          <Button variant='contained' color='info' onClick={handleUpdate}>Subscribe</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
