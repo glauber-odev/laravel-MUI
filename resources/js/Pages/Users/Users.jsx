@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Box, Chip, Typography } from "@mui/material";
+import { Box, Chip, Typography, Alert } from "@mui/material";
 import EditDialog from './EditDialog';
 
 const columns = [
@@ -54,7 +54,7 @@ const columns = [
                 return <Chip label="National ID" color="success"/>
             }
             if(params.value == 3 ){
-                return <Chip label='Drivers License' color='primary'/>
+                return <Chip label='Drivers License' color='warning'/>
             }
             if(params.value == 4 ){
                 return <Chip label='National Healty InsuranceI' color='info'/>
@@ -96,7 +96,7 @@ const columns = [
 
 const paginationModel = { page: 0, pageSize: 5 };
 
-export default function DataTable({ post }) {
+export default function DataTable({ post, success }) {
 
     const [rows, setRows] = useState([]);
 
@@ -115,7 +115,7 @@ export default function DataTable({ post }) {
         }));
 
         setRows(fetchData);
-    }, []);
+    }, [post]);
 
     function customToolbar () {
         return (
@@ -123,6 +123,11 @@ export default function DataTable({ post }) {
                 <Box sx={{ p:2, display:'flex'}} >
                     <Typography variant="h4" >Students</Typography>
                 </Box>
+                {success &&
+                    <Alert variant="filled" severity="success">
+                    {success}
+                    </Alert>
+                }
             </GridToolbarContainer>
         )
     }

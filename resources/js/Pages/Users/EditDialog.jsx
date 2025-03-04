@@ -8,7 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Box, Grid, patch } from '@mui/material';
-import { MenuItem } from '@headlessui/react';
+import { MenuItem } from '@mui/material';
 
 export default function FormDialog({ params }) {
 
@@ -42,7 +42,6 @@ export default function FormDialog({ params }) {
   const handleUpdate = () => {
     put(route('update'), {
         onSuccess: () => {
-            setMessage('success');
             handleClose();
         }
     })
@@ -166,7 +165,7 @@ export default function FormDialog({ params }) {
                             onChange={(e) =>
                                 setData("national_id", e.target.value)
                             }
-                            error={!!errors.national_id}
+                            error={!! errors.national_id}
                             helperText={errors.national_id}
                         >
                             {items?.map((item, i) => {

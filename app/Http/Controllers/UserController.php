@@ -15,7 +15,10 @@ class UserController extends Controller
     {
         $post = Student::all();
 
-        return Inertia::render('Users/Users', compact('post'));
+        return Inertia::render('Users/Users',[
+            'post' => $post,
+            'success' => session('success')
+        ]);
     }
 
     public function create(): Response
@@ -40,7 +43,6 @@ class UserController extends Controller
     }
 
     public function update(StudentRequest $request){
-        // dd($request->toArray());
 
         $student = Student::find($request->id);
         $student->first_name = $request['first_name'];
@@ -52,6 +54,6 @@ class UserController extends Controller
 
         $student->update();
 
-        return redirect()->back()->with('success','success');
+        return redirect()->back()->with('success','Successfully updated!');
     }
 }
