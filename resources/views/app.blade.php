@@ -12,6 +12,9 @@
 
         <!-- Scripts -->
         @routes
+        <script>
+            Ziggy.url = '{{ env('APP_URL') }}';
+        </script>
         @viteReactRefresh
         @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
         @inertiaHead
