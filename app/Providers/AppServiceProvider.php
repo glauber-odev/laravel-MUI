@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,9 +21,5 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Vite::prefetch(concurrency: 3);
-        URL::forceRootUrl(Config::get('app.url'));
-        if (str_contains(Config::get('app.url'), 'https://')) {
-            URL::forceScheme('https');
-        }
     }
 }
